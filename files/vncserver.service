@@ -1,0 +1,8 @@
+[Unit]
+After=syslog.target network.target systemd-user-sessions.service plymouth-quit-wait.service
+
+[Service]
+ExecStart=/usr/local/bin/vncserver.sh
+
+[Install]
+WantedBy=default.target

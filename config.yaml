@@ -1,0 +1,84 @@
+---
+- name: Configure webserver with vnc
+  hosts: webservers
+  become: true
+  gather_facts: false
+
+  tasks: 
+    - name: Install apt packages
+      become: true
+      apt:
+          update_cache: true
+          cache_valid_time: 3600
+          pkg:
+              - ubuntu-desktop
+              - tightvncserver
+              - x11vnc
+              - dkms
+              - build-essential
+              - linux-headers-generic
+              - xserver-xorg
+              - libglu1-mesa-dev
+              - freeglut3-dev
+              - mesa-common-dev
+              - libxmu-dev 
+              - libxi-dev
+              - mesa-utils
+              - xserver-xorg-legacy
+              - lightdm
+
+    - name: remove gdm package
+      become: true
+      apt:
+          name: gdm
+          state: absent
+
+    - name: Copy blacklist file
+      copy:
+          src: blacklist-nouveau.conf
+          dest: /etc/modprobe.d/blacklist-nouveau.conf
+
+    - name: Copy nouveau file
+      copy:
+          src: nouveau-kms.conf
+          dest: /etc/modprobe.d/nouveau-kms.conf
+
+    - name: Copy vnc sh file
+      copy:
+          src: vncserver.sh
+          dest: /usr/local/bin/
+          mode: '0775'
+
+    - name: Copy vnc service file
+      copy:
+          src: vncserver.service
+          dest: /etc/systemd/system/
+
+    - name: Copy xorg login file
+      copy:
+          src: Xwrapper.config
+          dest: /etc/X11/Xwrapper.config
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: ~/.vnc
+        state: directory
+        mode: '0755'
+
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    # - name: Restart service lightdm in all cases
+    #   ansible.builtin.service:
+    #     name: lightdm
+    #     state: restarted
+
+    - name: disable service systemd-networkd-wait-online
+      service: name=systemd-networkd-wait-online.service state=stopped enabled=no
+
+    - name: start vncserver service
+      service: name=vncserver.service state=restarted
+
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:
