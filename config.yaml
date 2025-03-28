@@ -84,7 +84,7 @@
       ansible.builtin.file:
         path: /home/ubuntu/.vnc
         state: directory
-        mode: '0755'
+        mode: '0777'
         owner: ubuntu
         group: ubuntu
 
