@@ -56,6 +56,8 @@
       copy:
           src: vncserver.service
           dest: /etc/systemd/system/
+          owner: ubuntu
+          group: ubuntu
 
     - name: Copy xorg login file
       copy:
