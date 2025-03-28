@@ -1,6 +1,6 @@
 ---
 - name: Configure webserver with vnc
-  hosts: webservers
+  hosts: tag_Name_fresh_install
   become: true
   gather_facts: false
 

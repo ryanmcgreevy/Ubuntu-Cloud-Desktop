@@ -49,10 +49,17 @@ resource "aws_security_group_rule" "allow_rdp" {
   cidr_blocks = local.all_ips
 }
 
+ resource "aws_key_pair" "deployer" {
+   key_name   = "deployer-key"
+   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGOrmtRK7DeHDOJ4am6idvME6qM9B+sPMfitahtt/DDJ"
+ }
+
 resource "aws_instance" "single" {
   ami           = var.ami_id
   instance_type = var.instance_type
-
+  key_name = aws_key_pair.deployer.key_name
+  vpc_security_group_ids = [aws_security_group.sec_group.id]
+  
   tags = {
     Name = var.tag
   }
