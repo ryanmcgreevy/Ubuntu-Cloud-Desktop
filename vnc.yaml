@@ -95,7 +95,7 @@
           src: lightdm.conf
           dest: /etc/lightdm/lightdm.conf
 
-    - name: Create a directory if it does not exist
+    - name: Create a vnc directory if it does not exist
       ansible.builtin.file:
         path: /home/ubuntu/.vnc
         state: directory
