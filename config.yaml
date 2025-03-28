@@ -58,6 +58,7 @@
           dest: /etc/systemd/system/
           owner: ubuntu
           group: ubuntu
+          mode: '0664'
 
     - name: Copy xorg login file
       copy:
