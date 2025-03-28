@@ -10,7 +10,7 @@ locals {
 }
 
 resource "aws_security_group" "sec_group" {
-  name = "apachevnc"
+  name = "apachevncrdp"
 }
 
 resource "aws_security_group_rule" "allow_http" {
