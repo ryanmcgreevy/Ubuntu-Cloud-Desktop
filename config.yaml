@@ -60,6 +60,11 @@
           group: ubuntu
           mode: '0664'
 
+    - name: Enable service vnc, and not touch the state
+      ansible.builtin.service:
+        name: vncserver.service
+        enabled: yes
+
     - name: Copy xorg login file
       copy:
           src: Xwrapper.config
