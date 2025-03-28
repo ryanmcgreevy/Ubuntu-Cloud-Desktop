@@ -61,20 +61,27 @@
           src: Xwrapper.config
           dest: /etc/X11/Xwrapper.config
 
+    - name: Copy lightdm conf file
+      copy:
+          src: lightdm.conf
+          dest: /etc/lightdm/lightdm.conf
+
     - name: Create a directory if it does not exist
       ansible.builtin.file:
         path: ~/.vnc
         state: directory
         mode: '0755'
+        owner: ubuntu
+        group: ubuntu
 
     - name: Just force systemd to reread configs (2.4 and above)
       ansible.builtin.systemd_service:
         daemon_reload: true
 
-    # - name: Restart service lightdm in all cases
-    #   ansible.builtin.service:
-    #     name: lightdm
-    #     state: restarted
+    - name: Restart service lightdm in all cases
+      ansible.builtin.service:
+        name: lightdm
+        state: restarted
 
     - name: disable service systemd-networkd-wait-online
       service: name=systemd-networkd-wait-online.service state=stopped enabled=no
