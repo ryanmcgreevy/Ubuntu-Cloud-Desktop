@@ -26,13 +26,20 @@
               - mesa-utils
               - xserver-xorg-legacy
               - xserver-xorg-video-dummy
-              - lightdm
 
     - name: remove gdm package
       become: true
       apt:
-          name: gdm
+          pkg: gdm
           state: absent
+
+    - name: Install lightdm packages
+      become: true
+      apt:
+          update_cache: true
+          cache_valid_time: 3600
+          pkg:
+              - lightdm
 
     - name: Copy blacklist file
       copy:
@@ -102,8 +109,8 @@
 
     - name: Restart service lightdm in all cases
       ansible.builtin.service:
-        name: lightdm
-        state: restarted
+         name: lightdm
+         state: restarted
 
     - name: disable service systemd-networkd-wait-online
       service: name=systemd-networkd-wait-online.service state=stopped enabled=no
