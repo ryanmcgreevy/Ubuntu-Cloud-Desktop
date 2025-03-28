@@ -25,6 +25,7 @@
               - libxi-dev
               - mesa-utils
               - xserver-xorg-legacy
+              - xserver-xorg-video-dummy
               - lightdm
 
     - name: remove gdm package
