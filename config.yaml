@@ -62,6 +62,16 @@
           src: Xwrapper.config
           dest: /etc/X11/Xwrapper.config
 
+    - name: Copy xorg nogpu file
+      copy:
+          src: xorg.conf.nogpu
+          dest: /etc/X11/xorg.conf.nogpu
+
+    - name: Copy xorg nvidia file
+      copy:
+          src: xorg.conf.nvidia
+          dest: /etc/X11/xorg.conf.nvidia
+
     - name: Copy lightdm conf file
       copy:
           src: lightdm.conf
