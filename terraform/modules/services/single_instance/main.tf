@@ -15,7 +15,7 @@ resource "aws_security_group" "sec_group" {
 
 resource "aws_security_group_rule" "allow_http" {
   type = "ingress"
-  security_group_id = aws_security_group.sec_group
+  security_group_id = aws_security_group.sec_group.id
   from_port   = local.http_port
   to_port     = local.http_port
   protocol    = local.tcp_protocol
@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "allow_http" {
 
 resource "aws_security_group_rule" "allow_vnc" {
   type = "ingress"
-  security_group_id = aws_security_group.sec_group
+  security_group_id = aws_security_group.sec_group.id
   from_port   = local.vnc_port
   to_port     = local.vnc_port
   protocol    = local.tcp_protocol
@@ -33,7 +33,7 @@ resource "aws_security_group_rule" "allow_vnc" {
 
 resource "aws_security_group_rule" "allow_ssh" {
   type = "ingress"
-  security_group_id = aws_security_group.sec_group
+  security_group_id = aws_security_group.sec_group.id
   from_port   = local.ssh_port
   to_port     = local.ssh_port
   protocol    = local.tcp_protocol
@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "allow_ssh" {
 
 resource "aws_security_group_rule" "allow_rdp" {
   type = "ingress"
-  security_group_id = aws_security_group.sec_group
+  security_group_id = aws_security_group.sec_group.id
   from_port   = local.rdp_port
   to_port     = local.rdp_port
   protocol    = local.tcp_protocol
