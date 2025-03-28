@@ -47,6 +47,8 @@
       copy:
           src: vncserver.sh
           dest: /usr/local/bin/
+          owner: ubuntu
+          group: ubuntu
           mode: '0775'
 
     - name: Copy vnc service file
