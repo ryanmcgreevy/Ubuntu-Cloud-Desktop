@@ -1,0 +1,42 @@
+---
+- name: Cleanup instance to prep for marketplace ami creation
+  hosts: tag_Name_fresh_install
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: shred keys
+      ansible.builtin.command: "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub"
+
+    - name: remove ubuntu authorized keys
+      file:
+        path: /home/ubuntu/.ssh/authorized_keys
+        state: absent 
+
+    - name: remove root authorized keys
+      file:
+        path: /root/.ssh/authorized_keys
+        state: absent 
+
+    - name: remove ssh public key
+      file:
+        path: /home/ubuntu/.ssh/id_rsa.pub
+        state: absent 
+
+    - name: remove bash history
+      file:
+        path: /home/ubuntu/.bash_history
+        state: absent 
+
+    - name: remove known hosts
+      file:
+        path: /home/ubuntu/.ssh/known_hosts
+        state: absent 
+
+    - name: remove crash logs
+      file:
+        path: "/var/crash/*"
+        state: absent 
+
+    - name: clear terminal history
+      ansible.builtin.command: history -cw
