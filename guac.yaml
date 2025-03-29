@@ -13,6 +13,7 @@
           pkg:
               - guacd
               - default-jdk
+              - apache2
 
     - name: Ensure group "tomcat" exists
       ansible.builtin.group:
@@ -40,7 +41,7 @@
     - name: Copy tomcat files
       unarchive:
           src: tomcat.tar.gz
-          dest: /usr/share/tomcat
+          dest: /usr/share/
           owner: tomcat
           group: tomcat
           mode: '777'
@@ -74,3 +75,74 @@
       ansible.builtin.service:
          name: tomcat.service
          state: started
+
+    - name: Create a guacamole directory if it does not exist
+      ansible.builtin.file:
+        path: /etc/guacamole
+        state: directory
+
+    - name: Copy guacamole war file
+      copy:
+          src: guacamole.war
+          dest: /etc/guacamole/
+
+    - name: make a symlkink to guacamole war file
+      file:
+        src: /etc/guacamole/guacamole.war
+        dest: /usr/share/tomcat/webapps/guacamole.war
+        state: link
+
+    - name: Copy guacamole home file
+      copy:
+          src: tomcat
+          dest: /etc/default/tomcat
+
+    - name: Copy guacamole properties file
+      copy:
+          src: guacamole.properties
+          dest: /etc/guacamole/
+
+    - name: make a symlkink to guacamole
+      file:
+        src: /etc/guacamole/
+        dest: /usr/share/tomcat/.guacamole
+        state: link
+
+    - name: Copy apache conf for guacamole file
+      copy:
+          src: guacamole.conf
+          dest:  /etc/apache2/sites-available/
+
+    - name: Enable the Apache2 module proxy
+      community.general.apache2_module:
+        state: present
+        name: proxy
+
+    - name: Enable the Apache2 module proxy_http
+      community.general.apache2_module:
+        state: present
+        name: proxy_http
+
+    - name: Enable the Apache2 module proxy_balancer
+      community.general.apache2_module:
+        state: present
+        name: proxy_balancer
+
+    - name: Enable the Apache2 module lbmethod_byrequests
+      community.general.apache2_module:
+        state: present
+        name: lbmethod_byrequests
+
+    - name: add guacamole apache site
+      command: a2ensite guacamole
+
+    - name: remove apache default site
+      command: a2dissite 000-default.conf
+
+    - name: restart service apache2 in all cases
+      ansible.builtin.service:
+         name: apache2
+         state: restarted
+
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:
