@@ -5,8 +5,8 @@
   gather_facts: false
 
   tasks:
-    - name: shred keys
-      ansible.builtin.command: "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub"
+    #- name: shred keys
+    #  ansible.builtin.command: "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub"
 
     - name: remove ubuntu authorized keys
       file:
@@ -39,4 +39,4 @@
         state: absent 
 
     - name: clear terminal history
-      ansible.builtin.command: history -cw
+      shell: history -cw
