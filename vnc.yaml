@@ -26,6 +26,7 @@
               - mesa-utils
               - xserver-xorg-legacy
               - xserver-xorg-video-dummy
+              - nvidia-driver-550
 
     - name: disable service gdm
       service: name=gdm.service state=stopped enabled=no
