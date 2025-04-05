@@ -2,3 +2,4 @@
 - import_playbook: vnc.yaml
 - import_playbook: guac.yaml
 - import_playbook: rdp.yaml
+- import_playbook: cleanup.yaml
