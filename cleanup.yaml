@@ -40,3 +40,5 @@
 
     - name: clear terminal history
       shell: history -cw
+      args:
+        executable: /bin/bash
