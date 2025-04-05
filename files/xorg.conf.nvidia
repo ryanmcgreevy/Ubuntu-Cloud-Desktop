@@ -44,7 +44,7 @@ Section "Device"
     Driver         "nvidia"
     VendorName     "NVIDIA Corporation"
     Option "ConnectToAcpid" "0"
-    BusID       "PCI:0:30:0"
+#    BusID       "PCI:0:30:0"
 
 EndSection
 
