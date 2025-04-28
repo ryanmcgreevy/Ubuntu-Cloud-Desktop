@@ -11,9 +11,44 @@
           update_cache: true
           cache_valid_time: 3600
           pkg:
-              - guacd
+              #guacd seems to not be in ubuntu 25.04 repos, must build from src...
+              #- guacd
               - default-jdk
               - apache2
+              #the following are only needed if building guacamole-server
+              - libcairo2-dev
+              - libjpeg-turbo8-dev
+              - libpng-dev
+              - libtool-bin
+              - uuid-dev
+              - freerdp2-dev
+              - libvncserver-dev
+
+    - name : Copy guacamole server files
+      unarchive:
+          src: guacamole-server.tar.gz
+          dest: /home/ubuntu
+
+    - name : generate configure file for guac server
+      command: 
+        cmd: autoreconf -fi
+        chdir: /home/ubuntu/guacamole-server
+
+    - name : configure guac server
+      command: 
+        cmd: ./configure --with-init-dir=/etc/init.d
+        chdir: /home/ubuntu/guacamole-server
+
+    - name : make and install guac server
+      community.general.make:
+        chdir: /home/ubuntu/guacamole-server
+        target: install
+      become: true
+
+    - name : remove guac server source files
+      ansible.builtin.file:
+        path: /home/ubuntu/guacamole-server
+        state: absent
 
     - name: Ensure group "tomcat" exists
       ansible.builtin.group:
