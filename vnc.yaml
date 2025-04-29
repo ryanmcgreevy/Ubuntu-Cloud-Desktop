@@ -91,6 +91,11 @@
           src: xorg.conf.nvidia
           dest: /etc/X11/xorg.conf.nvidia
 
+    - name: Copy xorg nvidia file for aarch64
+      copy:
+          src: xorg.conf.nvidia.aarch64
+          dest: /etc/X11/xorg.conf.nvidia.aarch64
+
     - name: Copy lightdm conf file
       copy:
           src: lightdm.conf

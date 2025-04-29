@@ -34,15 +34,22 @@
         cmd: autoreconf -fi
         chdir: /home/ubuntu/guacamole-server
 
+
     - name : configure guac server
       command: 
         cmd: ./configure --with-init-dir=/etc/init.d
         chdir: /home/ubuntu/guacamole-server
 
+
     - name : make and install guac server
       community.general.make:
         chdir: /home/ubuntu/guacamole-server
         target: install
+      become: true
+
+    - name : run ldconfig to load new guac shared libraries
+      command:
+        cmd: ldconfig
       become: true
 
     - name : remove guac server source files

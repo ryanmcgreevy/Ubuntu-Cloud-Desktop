@@ -36,10 +36,14 @@ echo "
 </user-mapping>
 " > /etc/guacamole/user-mapping.xml
 
-
+ARCH="$(uname -m)" 
 GPUCHECK="$(lspci)"
 if [[ $GPUCHECK =~ "NVIDIA" ]]; then
-   sudo cp /etc/X11/xorg.conf.nvidia /etc/X11/xorg.conf
+   if [[ $ARCH = "aarch64" ]]; then 
+        sudo cp /etc/X11/xorg.conf.nvidia.aarch64 /etc/X11/xorg.conf
+   else
+        sudo cp /etc/X11/xorg.conf.nvidia /etc/X11/xorg.conf
+   fi 
    sudo update-alternatives --set i386-linux-gnu_gl_conf /usr/lib/${nvidia_driver}/alt_ld.so.conf
    sudo update-alternatives --set i386-linux-gnu_egl_conf /usr/lib/${nvidia_driver}/alt_ld.so.conf
    sudo update-alternatives --set x86_64-linux-gnu_gl_conf /usr/lib/${nvidia_driver}/ld.so.conf
@@ -52,5 +56,7 @@ else
    sudo update-alternatives --set x86_64-linux-gnu_egl_conf /usr/lib/x86_64-linux-gnu/mesa-egl/ld.so.conf
 fi
 
+#start guacamole server in case it hasn't already started
+guacd
 #sudo -u ${USER} /usr/bin/xinit -display :${DISPLAY} &
 /usr/bin/x11vnc -rfbauth $HOME/.vnc/passwd -rfbport ${VNCPORT} -display :${DISPLAY} -repeat -forever -loop -xrandr newfbsize -o /var/log/vnc.log -noxrecord
