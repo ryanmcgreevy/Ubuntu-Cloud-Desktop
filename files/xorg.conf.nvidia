@@ -39,12 +39,17 @@ Section "Monitor"
     Option         "DPMS"
 EndSection
 
+Section "Files"
+        ModulePath "/usr/lib/x86_64-linux-gnu/nvidia/xorg/"
+        ModulePath "/usr/lib/xorg/modules/"
+EndSection
+
 Section "Device"
     Identifier     "Device0"
     Driver         "nvidia"
     VendorName     "NVIDIA Corporation"
     Option "ConnectToAcpid" "0"
-#    BusID       "PCI:0:30:0"
+    BusID       "PCI:0:30:0"
 
 EndSection
 
