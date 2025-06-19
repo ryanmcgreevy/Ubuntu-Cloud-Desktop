@@ -9,7 +9,7 @@
       become: true
       apt:
           update_cache: true
-          cache_valid_time: 3600
+          cache_valid_time: 7200
           pkg:
               #guacd seems to not be in ubuntu 25.04 repos, must build from src...
               #- guacd
@@ -79,7 +79,8 @@
         mode: '0777'
         owner: ubuntu
         group: ubuntu
-
+    #WARNING: make sure the archive file in the repo is first uncompressed and the top level directory changed to /tomcat
+    #This needs to happen whenever a new version of tomcat is being installed, until the process of renaming the file is automated
     - name: Copy tomcat files
       unarchive:
           src: tomcat.tar.gz
