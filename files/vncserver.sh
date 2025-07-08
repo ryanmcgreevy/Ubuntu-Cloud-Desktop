@@ -44,16 +44,12 @@ if [[ $GPUCHECK =~ "NVIDIA" ]]; then
    else
         sudo cp /etc/X11/xorg.conf.nvidia /etc/X11/xorg.conf
    fi 
-   sudo update-alternatives --set i386-linux-gnu_gl_conf /usr/lib/${nvidia_driver}/alt_ld.so.conf
-   sudo update-alternatives --set i386-linux-gnu_egl_conf /usr/lib/${nvidia_driver}/alt_ld.so.conf
-   sudo update-alternatives --set x86_64-linux-gnu_gl_conf /usr/lib/${nvidia_driver}/ld.so.conf
-   sudo update-alternatives --set x86_64-linux-gnu_egl_conf /usr/lib/${nvidia_driver}/ld.so.conf
 else
-   sudo cp /etc/X11/xorg.conf.nogpu /etc/X11/xorg.conf
-   sudo update-alternatives --set i386-linux-gnu_gl_conf /usr/lib/i386-linux-gnu/mesa/ld.so.conf
-   sudo update-alternatives --set i386-linux-gnu_egl_conf /usr/lib/i386-linux-gnu/mesa-egl/ld.so.conf
-   sudo update-alternatives --set x86_64-linux-gnu_gl_conf /usr/lib/x86_64-linux-gnu/mesa/ld.so.conf
-   sudo update-alternatives --set x86_64-linux-gnu_egl_conf /usr/lib/x86_64-linux-gnu/mesa-egl/ld.so.conf
+   if [[ $ARCH = "aarch64" ]]; then 
+        sudo cp /etc/X11/xorg.conf.nogpu.aarch64 /etc/X11/xorg.conf
+   else
+        sudo cp /etc/X11/xorg.conf.nogpu /etc/X11/xorg.conf
+   fi 
 fi
 
 #start guacamole server in case it hasn't already started
