@@ -44,7 +44,7 @@ Section "Module"
 EndSection
 
 Section "Device"
-    Identifier "Card0"
+    Identifier "Device0"
     #Option "NoDDC" "true"
    # Option "IgnoreEDID" "true"
     Driver "dummy"
