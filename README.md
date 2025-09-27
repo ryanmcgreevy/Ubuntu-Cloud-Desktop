@@ -1,4 +1,4 @@
-#Ubuntu Cloud Desktop
+# Ubuntu Cloud Desktop
 
 Terraform and Ansible files for provisioning and configuration management of
 Amazon Web Services (AWS) Elastic Compute Cloud (EC2) images for
