@@ -4,12 +4,12 @@
   become: true
   gather_facts: false
 
-  tasks: 
+  tasks:
     - name: Install apt packages
       become: true
       apt:
           update_cache: true
-          #cache_valid_time: 3600
+          # cache_valid_time: 3600
           pkg:
               - ubuntu-desktop
               - tightvncserver
@@ -21,7 +21,7 @@
               - libglu1-mesa-dev
               - freeglut3-dev
               - mesa-common-dev
-              - libxmu-dev 
+              - libxmu-dev
               - libxi-dev
               - mesa-utils
               - xserver-xorg-legacy

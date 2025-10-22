@@ -1,0 +1,99 @@
+---
+- name: Configure webserver with gnome remote desktop
+  hosts: tag_Name_fresh_install
+  become: true
+  gather_facts: false
+
+  tasks:
+    # - name: Install apt packages
+    #   become: true
+    #   ansible.builtin.apt:
+    #     update_cache: true
+    #     # cache_valid_time: 3600
+    #     pkg:
+    #       - ubuntu-desktop
+    #       - winpr3-utils
+    #       - nvidia-driver-550
+
+    - name: Copy blacklist file
+      ansible.builtin.copy:
+        src: blacklist-nouveau.conf
+        dest: /etc/modprobe.d/blacklist-nouveau.conf
+        mode: '0644'
+
+    - name: Copy nouveau file
+      ansible.builtin.copy:
+        src: nouveau-kms.conf
+        dest: /etc/modprobe.d/nouveau-kms.conf
+        mode: '0644'
+
+    - name: Copy gnome remote desktop sh file
+      ansible.builtin.copy:
+        src: grdserver.sh
+        dest: /usr/local/bin/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0775'
+
+    - name: Copy gnome remote desktop service file
+      ansible.builtin.copy:
+        src: grdserver.service
+        dest: /etc/systemd/system/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0664'
+
+    # - name: Disable service gdm
+    #   ansible.builtin.service:
+    #     name: gdm.service
+    #     state: stopped
+    #     enabled: false
+
+    # - name: Remove gdm3 package
+    #   become: true
+    #   ansible.builtin.apt:
+    #     pkg: gdm3
+    #     state: absent
+
+    # - name: Install lightdm packages
+    #   become: true
+    #   ansible.builtin.apt:
+    #     update_cache: true
+    #     cache_valid_time: 3600
+    #     pkg:
+    #       - lightdm
+
+    # - name: Copy lightdm conf file
+    #   ansible.builtin.copy:
+    #     src: lightdm.conf
+    #     dest: /etc/lightdm/lightdm.conf
+    #     mode: '0664'
+
+    # - name: Restart service lightdm in all cases
+    #   ansible.builtin.service:
+    #     name: lightdm
+    #     state: started
+    #     enabled: true
+
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Restart service gnome-remote-desktop in all cases
+      ansible.builtin.service:
+        name: gnome-remote-desktop
+        state: restarted
+
+    - name: Disable service systemd-networkd-wait-online
+      ansible.builtin.service:
+        name: systemd-networkd-wait-online.service
+        state: stopped
+        enabled: false
+
+    - name: Start grdserver service
+      ansible.builtin.service:
+        name: grdserver.service
+        state: restarted
+
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:

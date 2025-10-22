@@ -8,29 +8,27 @@
     - name: Install apt packages
       become: true
       apt:
-          update_cache: true
-          cache_valid_time: 3600
-          pkg:
-              - xrdp
-    
+        update_cache: true
+        cache_valid_time: 3600
+        pkg:
+            - xrdp
+
     - name: Add the user 'xrdp'
       ansible.builtin.user:
         name: xrdp
         group: ssl-cert
         comment: xrdp
 
-    - name: restart service xrdp in all cases
+    - name: Restart service xrdp in all cases
       ansible.builtin.service:
-         name: xrdp
-         state: restarted
+        name: xrdp
+        state: restarted
 
     - name: Copy xrdp ini file
       copy:
-          src: xrdp.ini
-          dest:  /etc/xrdp/
+        src: ./Files/xrdp.ini
+        dest:  /etc/xrdp/
 
     - name: Unconditionally reboot the machine with all defaults
       ansible.builtin.reboot:
-
-
 

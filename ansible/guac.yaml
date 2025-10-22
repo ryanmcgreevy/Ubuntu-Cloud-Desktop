@@ -21,7 +21,7 @@
               - libpng-dev
               - libtool-bin
               - uuid-dev
-              - freerdp2-dev
+              - freerdp3-dev
               - libvncserver-dev
 
     - name : Copy guacamole server files
@@ -34,12 +34,10 @@
         cmd: autoreconf -fi
         chdir: /home/ubuntu/guacamole-server
 
-
     - name : configure guac server
       command: 
         cmd: ./configure --with-init-dir=/etc/init.d
         chdir: /home/ubuntu/guacamole-server
-
 
     - name : make and install guac server
       community.general.make:
@@ -127,7 +125,7 @@
     - name: Copy guacamole war file
       copy:
           src: guacamole.war
-          dest: /etc/guacamole/
+          dest: /etc/guacamole/guacamole.war
 
     - name: make a symlkink to guacamole war file
       file:
@@ -179,13 +177,18 @@
     - name: add guacamole apache site
       command: a2ensite guacamole
 
-    - name: remove apache default site
+    - name: Remove apache default site
       command: a2dissite 000-default.conf
 
-    - name: restart service apache2 in all cases
+    - name: Restart service apache2 in all cases
       ansible.builtin.service:
-         name: apache2
-         state: restarted
+        name: apache2
+        state: restarted
+
+    - name: Restart service guacd in all cases
+      ansible.builtin.service:
+        name: guacd
+        state: restarted
 
     - name: Unconditionally reboot the machine with all defaults
       ansible.builtin.reboot:
