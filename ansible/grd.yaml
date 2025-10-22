@@ -43,6 +43,9 @@
         group: ubuntu
         mode: '0664'
 
+    # need to add command for calling the grdctl.sh script to set the certificate files
+
+
     # - name: Disable service gdm
     #   ansible.builtin.service:
     #     name: gdm.service
