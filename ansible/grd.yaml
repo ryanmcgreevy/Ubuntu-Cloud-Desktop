@@ -50,7 +50,7 @@
     # need to install docker
     # need to set user ubuntu password
     # need to launch docker with following:
-    # docker run --network=host --name my-guacd -d -p 4822:4822 ryanmcgreevy/guacd:latest
+    # docker run --network=host --name my-guacd --restart always-d -p 4822:4822 ryanmcgreevy/guacd:latest
 
     # - name: Disable service gdm
     #   ansible.builtin.service:
