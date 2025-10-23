@@ -5,15 +5,17 @@
   gather_facts: false
 
   tasks:
-    # - name: Install apt packages
-    #   become: true
-    #   ansible.builtin.apt:
-    #     update_cache: true
-    #     # cache_valid_time: 3600
-    #     pkg:
-    #       - ubuntu-desktop
-    #       - winpr3-utils
-    #       - nvidia-driver-550
+    - name: Install apt packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        # cache_valid_time: 3600
+        pkg:
+          - ubuntu-desktop
+          - winpr3-utils
+          - nvidia-driver-550
+          - default-jdk
+          - apache2
 
     - name: Copy blacklist file
       ansible.builtin.copy:
@@ -43,8 +45,12 @@
         group: ubuntu
         mode: '0664'
 
-    # need to add command for calling the grdctl.sh script to set the certificate files
 
+    # need to add command for calling the grdctl.sh script to set the certificate files
+    # need to install docker
+    # need to set user ubuntu password
+    # need to launch docker with following:
+    # docker run --network=host --name my-guacd -d -p 4822:4822 ryanmcgreevy/guacd:latest
 
     # - name: Disable service gdm
     #   ansible.builtin.service:
@@ -96,6 +102,136 @@
     - name: Start grdserver service
       ansible.builtin.service:
         name: grdserver.service
+        state: restarted
+
+    - name: Ensure group "tomcat" exists
+      ansible.builtin.group:
+        name: tomcat
+        state: present
+        system: true
+
+    - name: Add the user 'tomcat' with a specific uid and a primary group of 'tomcat'
+      ansible.builtin.user:
+        name: tomcat
+        comment: tomcat
+        uid: 1040
+        group: tomcat
+        home: /usr/share/tomcat
+        shell: /bin/false
+
+    - name: Create a tomcat directory if it does not exist
+      ansible.builtin.file:
+        path: /usr/share/tomcat
+        state: directory
+        mode: '0777'
+        owner: ubuntu
+        group: ubuntu
+    # WARNING: make sure the archive file in the repo is first uncompressed and the top level directory changed to /tomcat
+    # This needs to happen whenever a new version of tomcat is being installed, until the process of renaming the file is automated
+    - name: Copy tomcat files
+      ansible.builtin.unarchive:
+        src: tomcat.tar.gz
+        dest: /usr/share/
+        owner: tomcat
+        group: tomcat
+        mode: '777'
+
+    - name: Change ownership of tomcat directory
+      ansible.builtin.file:
+        path: /usr/share/tomcat
+        owner: tomcat
+        group: tomcat
+        recurse: true
+        state: directory
+
+    - name: Copy tomcat service file
+      ansible.builtin.copy:
+        src: tomcat.service
+        dest: /etc/systemd/system/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0664'
+
+    - name: Enable service tomcat, and not touch the state
+      ansible.builtin.service:
+        name: tomcat.service
+        enabled: true
+
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Start service tomcat in all cases
+      ansible.builtin.service:
+        name: tomcat.service
+        state: started
+
+    - name: Create a guacamole directory if it does not exist
+      ansible.builtin.file:
+        path: /etc/guacamole
+        state: directory
+
+    - name: Copy guacamole war file
+      ansible.builtin.copy:
+        src: guacamole-1.6.0.war
+        dest: /etc/guacamole/guacamole.war
+
+    - name: Make a symlkink to guacamole war file
+      ansible.builtin.file:
+        src: /etc/guacamole/guacamole.war
+        dest: /usr/share/tomcat/webapps/guacamole.war
+        state: link
+
+    - name: Copy guacamole home file
+      ansible.builtin.copy:
+        src: tomcat
+        dest: /etc/default/tomcat
+
+    - name: Copy guacamole properties file
+      ansible.builtin.copy:
+        src: guacamole.properties
+        dest: /etc/guacamole/
+
+    - name: Make a symlkink to guacamole
+      ansible.builtin.file:
+        src: /etc/guacamole/
+        dest: /usr/share/tomcat/.guacamole
+        state: link
+
+    - name: Copy apache conf for guacamole file
+      ansible.builtin.copy:
+        src: guacamole.conf
+        dest:  /etc/apache2/sites-available/
+
+    - name: Enable the Apache2 module proxy
+      community.general.apache2_module:
+        state: present
+        name: proxy
+
+    - name: Enable the Apache2 module proxy_http
+      community.general.apache2_module:
+        state: present
+        name: proxy_http
+
+    - name: Enable the Apache2 module proxy_balancer
+      community.general.apache2_module:
+        state: present
+        name: proxy_balancer
+
+    - name: Enable the Apache2 module lbmethod_byrequests
+      community.general.apache2_module:
+        state: present
+        name: lbmethod_byrequests
+
+    - name: Add guacamole apache site
+      ansible.builtin.command: a2ensite guacamole
+
+    - name: Remove apache default site
+      ansible.builtin.command: a2dissite 000-default.conf
+
+    - name: Restart service apache2 in all cases
+      ansible.builtin.service:
+        name: apache2
         state: restarted
 
     - name: Unconditionally reboot the machine with all defaults

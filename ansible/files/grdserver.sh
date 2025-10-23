@@ -19,6 +19,11 @@ sudo grdctl --system rdp set-credentials "${RDP_USER}" "${RDP_PASS}"
 sudo systemctl --now restart gnome-remote-desktop.service
 #echo $RDP_PASS | sudo passwd $RDP_USER --stdin
 
+#NOTE: for localhost to work in the below xml if you are running guacd in docker,
+#you must expose the host localhost to the container using host.docker.internal or by using
+#the host network with --network=host
+sudo mkdir -p /etc/guacamole
+
 echo "
 <user-mapping>
 
@@ -27,12 +32,14 @@ echo "
         <protocol>rdp</protocol>
         <param name=\"hostname\">localhost</param>
         <param name=\"port\">${GRDPORT}</param>
+        <param name="username">${USER}</param>
         <param name=\"password\">${EC2_INSTANCE_ID}</param>
+        <param name="ignore-cert">true</param>
     </authorize>
 
 </user-mapping>
 " | sudo tee /etc/guacamole/user-mapping.xml
 
 #start guacamole server in case it hasn't already started
-sudo guacd
+#sudo guacd
 
