@@ -31,6 +31,12 @@
           - default-jdk
           - apache2
 
+    - name: Copy cloudinit file
+      ansible.builtin.copy:
+        src: cloud.cfg
+        dest: /etc/cloud/cloud.cfg
+        mode: '0644'
+
     - name: Copy blacklist file
       ansible.builtin.copy:
         src: blacklist-nouveau.conf
@@ -111,6 +117,11 @@
         name: systemd-networkd-wait-online.service
         state: stopped
         enabled: false
+
+    - name: Enable service grd, and not touch the state
+      ansible.builtin.service:
+        name: grdserver.service
+        enabled: true
 
     - name: Start grdserver service
       ansible.builtin.service:
