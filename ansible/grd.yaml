@@ -38,16 +38,16 @@
         mode: '0644'
 
     - name: Make RDP ca-certificates
-      ansible.builtin.shell: sudo -u gnome-remote-desktop winpr-makecert3 -silent -rdp -path ~gnome-remote-desktop rdp-tls
+      ansible.builtin.command: sudo -u gnome-remote-desktop winpr-makecert3 -silent -rdp -path ~gnome-remote-desktop rdp-tls
 
     - name: Set RDP TLS key
-      ansible.builtin.shell: sudo grdctl --system rdp set-tls-key ~gnome-remote-desktop/rdp-tls.key
+      ansible.builtin.command: sudo grdctl --system rdp set-tls-key ~gnome-remote-desktop/rdp-tls.key
 
     - name: Set RDP TLS cert
-      ansible.builtin.shell: sudo grdctl --system rdp set-tls-cert ~gnome-remote-desktop/rdp-tls.crt
+      ansible.builtin.command: sudo grdctl --system rdp set-tls-cert ~gnome-remote-desktop/rdp-tls.crt
 
     - name: Enable RDP
-      ansible.builtin.shell: sudo grdctl --system rdp enable
+      ansible.builtin.command: sudo grdctl --system rdp enable
 
     - name: Restart service gnome-remote-desktop in all cases
       ansible.builtin.service:

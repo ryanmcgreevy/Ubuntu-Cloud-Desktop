@@ -46,7 +46,7 @@
 
         - name: Add Docker repo
           ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
+            repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
             state: present
             update_cache: true
 
@@ -60,16 +60,17 @@
           - docker-compose-plugin
         update_cache: true
 
-    - name: Pull guacd Docker image
-      community.docker.docker_image:
-        name: guacamole/guacd:latest
-        source: pull
+    # - name: Pull guacd Docker image
+    #   community.docker.docker_image:
+    #     name: guacamole/guacd:1.6.0
+    #     source: pull
 
     - name: Start guacd container
       community.docker.docker_container:
         name: guacd
-        image: guacamole/guacd:latest
+        image: guacamole/guacd:1.6.0
         state: started
         restart_policy: always
         network_mode: host
         detach: true
+        platform: linux/arm64
