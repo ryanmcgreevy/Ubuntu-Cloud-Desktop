@@ -27,7 +27,7 @@
         pkg:
           - ubuntu-desktop
           - winpr3-utils
-          - nvidia-driver-550
+          - nvidia-driver-580
           - default-jdk
           - apache2
 
@@ -61,10 +61,9 @@
 
 
     # need to add command for calling the grdctl.sh script to set the certificate files
-    # need to install docker
     # need to set user ubuntu password
     # need to launch docker with following:
-    # docker run --network=host --name my-guacd --restart always-d -p 4822:4822 ryanmcgreevy/guacd:latest
+    # sudo docker run --network=host --name guacd --restart always -d guacamole/guacd:latest
 
     # - name: Disable service gdm
     #   ansible.builtin.service:

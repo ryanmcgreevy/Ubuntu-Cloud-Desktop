@@ -32,9 +32,9 @@ echo "
         <protocol>rdp</protocol>
         <param name=\"hostname\">localhost</param>
         <param name=\"port\">${GRDPORT}</param>
-        <param name="username">${USER}</param>
+        <param name=\"username\">${USER}</param>
         <param name=\"password\">${EC2_INSTANCE_ID}</param>
-        <param name="ignore-cert">true</param>
+        <param name=\"ignore-cert\">true</param>
     </authorize>
 
 </user-mapping>

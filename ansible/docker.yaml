@@ -1,0 +1,61 @@
+---
+- name: Install docker
+  hosts: tag_Name_fresh_install
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    # the following two tasks are to get around sudo-rs usage and associated bugs introduced in Ubuntu 25.10
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Become to show id
+      ansible.builtin.command:
+        cmd: whoami
+      become: true
+      become_exe: "{{ 'sudo.ws' if ansible_facts.packages['sudo-rs'] is defined else 'sudo' }}"
+      changed_when: false
+      register: whoami_result
+
+    - name: Install aptitude
+      ansible.builtin.apt:
+        name: aptitude
+        update_cache: true
+
+    - name: Install required system packages
+      ansible.builtin.apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        update_cache: true
+
+    - name: Add Docker repo
+      block:
+        - name: Get Docker apt key
+          ansible.builtin.get_url:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            dest: /etc/apt/keyrings/docker.asc
+            mode: '0644'
+
+        - name: Add Docker repo
+          ansible.builtin.apt_repository:
+            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
+            state: present
+            update_cache: true
+
+    - name: Update apt and install docker
+      ansible.builtin.apt:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        update_cache: true
