@@ -59,3 +59,17 @@
           - docker-buildx-plugin
           - docker-compose-plugin
         update_cache: true
+
+    - name: Pull guacd Docker image
+      community.docker.docker_image:
+        name: guacamole/guacd:latest
+        source: pull
+
+    - name: Start guacd container
+      community.docker.docker_container:
+        name: guacd
+        image: guacamole/guacd:latest
+        state: started
+        restart_policy: always
+        network_mode: host
+        detach: true
