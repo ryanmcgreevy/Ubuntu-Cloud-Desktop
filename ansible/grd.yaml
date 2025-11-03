@@ -37,6 +37,23 @@
         dest: /etc/cloud/cloud.cfg
         mode: '0644'
 
+    - name: Make RDP ca-certificates
+      ansible.builtin.shell: sudo -u gnome-remote-desktop winpr-makecert3 -silent -rdp -path ~gnome-remote-desktop rdp-tls
+
+    - name: Set RDP TLS key
+      ansible.builtin.shell: sudo grdctl --system rdp set-tls-key ~gnome-remote-desktop/rdp-tls.key
+
+    - name: Set RDP TLS cert
+      ansible.builtin.shell: sudo grdctl --system rdp set-tls-cert ~gnome-remote-desktop/rdp-tls.crt
+
+    - name: Enable RDP
+      ansible.builtin.shell: sudo grdctl --system rdp enable
+
+    - name: Restart service gnome-remote-desktop in all cases
+      ansible.builtin.service:
+        name: gnome-remote-desktop
+        state: restarted
+
     - name: Copy blacklist file
       ansible.builtin.copy:
         src: blacklist-nouveau.conf
@@ -64,12 +81,6 @@
         owner: ubuntu
         group: ubuntu
         mode: '0664'
-
-
-    # need to add command for calling the grdctl.sh script to set the certificate files
-    # need to set user ubuntu password
-    # need to launch docker with following:
-    # sudo docker run --network=host --name guacd --restart always -d guacamole/guacd:latest
 
     # - name: Disable service gdm
     #   ansible.builtin.service:
@@ -106,11 +117,6 @@
     - name: Just force systemd to reread configs (2.4 and above)
       ansible.builtin.systemd_service:
         daemon_reload: true
-
-    - name: Restart service gnome-remote-desktop in all cases
-      ansible.builtin.service:
-        name: gnome-remote-desktop
-        state: restarted
 
     - name: Disable service systemd-networkd-wait-online
       ansible.builtin.service:
