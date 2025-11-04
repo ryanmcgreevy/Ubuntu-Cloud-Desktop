@@ -20,7 +20,7 @@
       register: whoami_result
 
     - name: Install apt packages
-      become: true
+    #  become: true
       ansible.builtin.apt:
         update_cache: true
         # cache_valid_time: 3600
@@ -36,6 +36,11 @@
         src: cloud.cfg
         dest: /etc/cloud/cloud.cfg
         mode: '0644'
+
+    - name: Set default user password
+      ansible.builtin.user:
+        name: ubuntu
+        password: $6$rounds=656000$mysecretsalt$tiseK/cEIufmyXIXMSZGggH1LNqFh5cicSIMiodT/1bNu.TzzTRNMpAzQl/VRW5RHamqVHhvbXvZ.A0mEbTu//
 
     - name: Make RDP ca-certificates
       ansible.builtin.command: sudo -u gnome-remote-desktop winpr-makecert3 -silent -rdp -path ~gnome-remote-desktop rdp-tls
