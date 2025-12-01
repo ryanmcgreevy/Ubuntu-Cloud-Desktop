@@ -15,6 +15,8 @@ RDP_USER=$USER
 # sudo grdctl --system rdp set-tls-key ~gnome-remote-desktop/rdp-tls.key
 # sudo grdctl --system rdp set-tls-cert ~gnome-remote-desktop/rdp-tls.crt
 # sudo grdctl --system rdp enable
+
+
 sudo grdctl --system rdp set-credentials "${RDP_USER}" "${RDP_PASS}"
 sudo systemctl --now restart gnome-remote-desktop.service
 #echo $RDP_PASS | sudo passwd $RDP_USER --stdin

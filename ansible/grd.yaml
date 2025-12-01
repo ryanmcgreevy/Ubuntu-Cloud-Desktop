@@ -19,6 +19,10 @@
       changed_when: false
       register: whoami_result
 
+    - name: Upgrade apt packages
+      ansible.builtin.apt:
+        upgrade: full
+
     - name: Install apt packages
     #  become: true
       ansible.builtin.apt:
@@ -37,10 +41,10 @@
         dest: /etc/cloud/cloud.cfg
         mode: '0644'
 
-    - name: Set default user password
-      ansible.builtin.user:
-        name: ubuntu
-        password: $6$rounds=656000$mysecretsalt$tiseK/cEIufmyXIXMSZGggH1LNqFh5cicSIMiodT/1bNu.TzzTRNMpAzQl/VRW5RHamqVHhvbXvZ.A0mEbTu//
+    # - name: Set default user password
+    #   ansible.builtin.user:
+    #     name: ubuntu
+    #     password: $6$rounds=656000$mysecretsalt$tiseK/cEIufmyXIXMSZGggH1LNqFh5cicSIMiodT/1bNu.TzzTRNMpAzQl/VRW5RHamqVHhvbXvZ.A0mEbTu//
 
     - name: Make RDP ca-certificates
       ansible.builtin.command: sudo -u gnome-remote-desktop winpr-makecert3 -silent -rdp -path ~gnome-remote-desktop rdp-tls
@@ -87,6 +91,12 @@
         group: ubuntu
         mode: '0664'
 
+    # - name: Copy gdm conf file
+    #   ansible.builtin.copy:
+    #     src: gdm.conf
+    #     dest: /etc/gdm3/custom.conf
+    #     mode: '0664'
+
     # - name: Disable service gdm
     #   ansible.builtin.service:
     #     name: gdm.service
@@ -112,6 +122,11 @@
     #     src: lightdm.conf
     #     dest: /etc/lightdm/lightdm.conf
     #     mode: '0664'
+
+    # - name: Enable service lightdm, and not touch the state
+    #   ansible.builtin.service:
+    #     name: lightdm.service
+    #     enabled: true
 
     # - name: Restart service lightdm in all cases
     #   ansible.builtin.service:

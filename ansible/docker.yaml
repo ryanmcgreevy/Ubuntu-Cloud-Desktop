@@ -24,6 +24,10 @@
         name: aptitude
         update_cache: true
 
+    - name: Upgrade apt packages
+      ansible.builtin.apt:
+        upgrade: full
+
     - name: Install required system packages
       ansible.builtin.apt:
         pkg:
@@ -46,7 +50,7 @@
 
         - name: Add Docker repo
           ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
+            repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
             state: present
             update_cache: true
 
@@ -73,4 +77,4 @@
         restart_policy: always
         network_mode: host
         detach: true
-        platform: linux/amd64
+        platform: linux/arm64
