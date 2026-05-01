@@ -50,7 +50,7 @@
 
         - name: Add Docker repo
           ansible.builtin.apt_repository:
-            repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
+            repo: "deb [arch={{ arch | default('amd64') }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
             state: present
             update_cache: true
 
@@ -77,4 +77,4 @@
         restart_policy: always
         network_mode: host
         detach: true
-        platform: linux/arm64
+        platform: linux/{{ arch | default('amd64') }}

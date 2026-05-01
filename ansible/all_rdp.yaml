@@ -1,4 +1,7 @@
 ---
-- import_playbook: docker.yaml
-- import_playbook: grd.yaml
-#- import_playbook: cleanup.yaml
+- name: Install and Configure Docker
+  import_playbook: docker.yaml
+- name: Install and Configure Gnome Remote Desktop and Guacamole
+  import_playbook: grd.yaml
+# - name: Cleanup image for AWS Marketplace
+  # import_playbook: cleanup.yaml
