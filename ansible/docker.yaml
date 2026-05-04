@@ -50,7 +50,7 @@
 
         - name: Add Docker repo
           ansible.builtin.apt_repository:
-            repo: "deb [arch={{ arch | default('amd64') }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  questing stable"
+            repo: "deb [arch={{ arch | default('amd64') }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  $(grep -oP 'VERSION_CODENAME=\K.*' /etc/os-release) stable"
             state: present
             update_cache: true
 
