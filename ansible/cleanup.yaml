@@ -43,9 +43,9 @@
       args:
         executable: /bin/bash
 
-    - name: wait for cloud-init to finish
-      ansible.builtin.command: cloud-init status --wait
-      changed_when: false
+    # - name: wait for cloud-init to finish
+    #   ansible.builtin.command: cloud-init status --wait
+    #   changed_when: false
 
     - name: Clean cloud-init state for next boot
       ansible.builtin.command: cloud-init clean --logs --seed
