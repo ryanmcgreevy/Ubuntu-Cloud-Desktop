@@ -47,13 +47,13 @@
     #   ansible.builtin.command: cloud-init status --wait
     #   changed_when: false
 
-    - name: Clean cloud-init state for next boot
-      ansible.builtin.command: cloud-init clean --logs --seed
+    # - name: Clean cloud-init state for next boot
+    #   ansible.builtin.command: cloud-init clean --logs --seed
 
-    - name: Reset machine id for image clone
-      ansible.builtin.command: truncate -s 0 /etc/machine-id
+    # - name: Reset machine id for image clone
+    #   ansible.builtin.command: truncate -s 0 /etc/machine-id
 
-    - name: Remove dbus machine id if present
-      ansible.builtin.file:
-        path: /var/lib/dbus/machine-id
-        state: absent
+    # - name: Remove dbus machine id if present
+    #   ansible.builtin.file:
+    #     path: /var/lib/dbus/machine-id
+    #     state: absent
