@@ -8,20 +8,15 @@
     #- name: shred keys
     #  ansible.builtin.command: "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub"
 
-    - name: remove ubuntu authorized keys
-      file:
-        path: /home/ubuntu/.ssh/authorized_keys
+    - name: remove ubuntu .ssh directory
+      ansible.builtin.file:
+        path: /home/ubuntu/.ssh
         state: absent
 
     - name: remove root authorized keys
-      file:
+      ansible.builtin.file:
         path: /root/.ssh/authorized_keys
         state: absent
-
-    - name: remove ssh public key
-      file:
-        path: /home/ubuntu/.ssh/id_rsa.pub
-        state: absent 
 
     - name: remove bash history
       file:
@@ -43,17 +38,17 @@
       args:
         executable: /bin/bash
 
-    # - name: wait for cloud-init to finish
+    # - name: Wait for cloud-init to finish
     #   ansible.builtin.command: cloud-init status --wait
     #   changed_when: false
 
-    # - name: Clean cloud-init state for next boot
-    #   ansible.builtin.command: cloud-init clean --logs --seed
+    - name: Clean cloud-init state for next boot
+      ansible.builtin.command: cloud-init clean --logs --seed
 
-    # - name: Reset machine id for image clone
-    #   ansible.builtin.command: truncate -s 0 /etc/machine-id
+    - name: Reset machine id for image clone
+      ansible.builtin.command: truncate -s 0 /etc/machine-id
 
-    # - name: Remove dbus machine id if present
-    #   ansible.builtin.file:
-    #     path: /var/lib/dbus/machine-id
-    #     state: absent
+    - name: Remove dbus machine id if present
+      ansible.builtin.file:
+        path: /var/lib/dbus/machine-id
+        state: absent
