@@ -3,7 +3,10 @@
   hosts: tag_Name_fresh_install
   become: true
   gather_facts: true
-
+  
+  vars:
+    arch: "{{ 'amd64' if ansible_facts.architecture == 'x86_64' else 'arm64' }}"
+  
   tasks:
 
     # the following two tasks are to get around sudo-rs usage and associated bugs introduced in Ubuntu 25.10
